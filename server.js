@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
+// GET Requests
 app.get('/notes', (req, res) =>
     res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
@@ -27,6 +28,7 @@ app.get('*', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/index.html'))
 );
 
+// POST Request
 app.post('/api/notes', (req, res) => {
     fs.readFile('./db/db.json', (err, data) => {
         if(err) {
@@ -43,6 +45,33 @@ app.post('/api/notes', (req, res) => {
             }
 
             notes.push(newNote);
+
+            fs.writeFile(
+                './db/db.json',
+                JSON.stringify(notes, null, 4),
+                (err) =>
+                    err ?
+                    console.error(err) :
+                    res.json("Note saved successfully.")
+            );
+        }
+    });
+});
+
+// DELETE Request
+app.delete('/api/notes/:id', (req, res) => {
+    fs.readFile('./db/db.json', (err, data) => {
+        if(err) {
+            console.log("Error reading file: " + err);
+        }
+        else {
+            const index = req.params.id - 1;
+            notes = JSON.parse(data);
+
+            // Decrement the id member variable of each note after the note being removed
+            notes.slice(index + 1).forEach((note) => note.id--);
+            // Remove the note requested to be deleted
+            notes.splice(index, 1);
 
             fs.writeFile(
                 './db/db.json',
