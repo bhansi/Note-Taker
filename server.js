@@ -35,7 +35,14 @@ app.post('/api/notes', (req, res) => {
         else {
             const { title, text } = req.body;
             notes = JSON.parse(data);
-            notes.push({ title, text });
+
+            const newNote = {
+                id: notes.length + 1,
+                title: title,
+                text: text
+            }
+
+            notes.push(newNote);
 
             fs.writeFile(
                 './db/db.json',
