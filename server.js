@@ -29,14 +29,14 @@ app.get('*', (req, res) =>
 );
 
 // POST Request
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', (req, res) =>
     fs.readFile('./db/db.json', (err, data) => {
         if(err) {
             console.log("Error reading file: " + err);
         }
         else {
+            let notes = JSON.parse(data);
             const { title, text } = req.body;
-            notes = JSON.parse(data);
 
             const newNote = {
                 id: notes.length + 1,
@@ -55,18 +55,18 @@ app.post('/api/notes', (req, res) => {
                     res.json("Note saved successfully.")
             );
         }
-    });
-});
+    })
+);
 
 // DELETE Request
-app.delete('/api/notes/:id', (req, res) => {
+app.delete('/api/notes/:id', (req, res) =>
     fs.readFile('./db/db.json', (err, data) => {
         if(err) {
             console.log("Error reading file: " + err);
         }
         else {
+            let notes = JSON.parse(data);
             const index = req.params.id - 1;
-            notes = JSON.parse(data);
 
             // Decrement the id member variable of each note after the note being removed
             notes.slice(index + 1).forEach((note) => note.id--);
@@ -82,7 +82,7 @@ app.delete('/api/notes/:id', (req, res) => {
                     res.json("Note saved successfully.")
             );
         }
-    });
-});
+    })
+);
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}\nLink: http://localhost:3001/`));
